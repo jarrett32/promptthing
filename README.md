@@ -1,29 +1,52 @@
-# Create T3 App
+# PromptThing
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+PromptThing is a powerful tool designed to help you quickly generate, copy, and customize prompts. Whether you're crafting content, brainstorming ideas, or organizing your thoughts, PromptThing simplifies the process with pre-written templates, variable injection, and result-saving capabilities.
 
-## What's next? How do I make an app with this?
+---
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## 🚀 Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- **Pre-Written Prompts**  
+  Access a library of pre-designed prompts tailored for various use cases.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Inject Variables**  
+  Customize prompts on the fly by injecting specific variables, making them highly adaptable to your needs.
 
-## Learn More
+- **Save Results**  
+  Save the generated prompts for future reference or export them for use in other tools.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+---
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## 🎯 Usage
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+1. **Search Prompts:**  
+   Use the search bar to find relevant prompts from the library.
 
-## How do I deploy this?
+2. **Select or Customize:**  
+   Pick a pre-written prompt and inject your custom variables.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+3. **Copy or Save:**  
+   Once finalized, copy the prompt to your clipboard or save it for later use.
+
+---
+
+## 📦 Work in Progress
+
+PromptThing is actively being developed, and new features and improvements are on the way!
+
+---
+
+## 🙌 Contribution
+
+Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, feel free to submit a pull request or open an issue.
+
+---
+
+## 📄 License
+
+PromptThing is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute this project as per the terms of the license.
+
+---
+
+### 🌟 Thank You for Using PromptThing!  
+We’re excited to make your workflow easier and more efficient. Stay tuned for more updates!
