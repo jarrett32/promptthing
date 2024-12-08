@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, type ChangeEvent } from "react";
 // import * as LucideIcons from "lucide-react";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import PromptFilter from "./components/PromptFilter";
 import PromptCategories from "./components/PromptCategories";
 import { type PromptData, type VarData } from "~/server/types";
@@ -15,9 +14,9 @@ export default function PromptTool() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const [customVarsRaw, setCustomVarsRaw] = useLocalStorage<
+  const [customVarsRaw, setCustomVarsRaw] = useState<
     VarData[] | Record<string, string>
-  >("customVars", []);
+  >([]);
   const [customVars, setCustomVars] = useState<VarData[]>([]);
   const [promptVars, setPromptVars] = useState<VarData[]>([]);
   const [selectedPrompt, setSelectedPrompt] = useState<PromptData | null>(null);

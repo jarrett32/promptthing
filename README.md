@@ -50,3 +50,6 @@ PromptThing is licensed under the [MIT License](LICENSE). Feel free to use, modi
 
 ### 🌟 Thank You for Using PromptThing!  
 We’re excited to make your workflow easier and more efficient. Stay tuned for more updates!
+
+### TODO:
+- use localStorage for env vars.

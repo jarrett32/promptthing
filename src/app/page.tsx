@@ -1,8 +1,8 @@
 import { HydrateClient } from "~/trpc/server";
-import PromptTool from "./promptool";
 import Header from "./components/Header";
+import PromptTool from "./promptool";
 
-export default async function Home() {
+export default function Home() {
   return (
     <HydrateClient>
       <div className="flex min-h-screen flex-col bg-gray-900 text-gray-100">
