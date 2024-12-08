@@ -26,9 +26,9 @@ export default function PromptSection(props: PromptSectionProps) {
   return (
     <div className="space-y-4">
       <div className="flex flex-row items-center space-x-4">
-        <h2 className="text-2xl text-purple-300">Full Prompt</h2>
+        <h2 className="text-2xl font-semibold text-gray-100">Full Prompt</h2>
         {selectedPrompt?.recommendedModel && (
-          <Badge className="mt-1 bg-purple-600 hover:bg-purple-500">
+          <Badge className="bg-gray-700 text-gray-200 hover:bg-gray-600">
             {selectedPrompt.recommendedModel}
           </Badge>
         )}
@@ -36,23 +36,23 @@ export default function PromptSection(props: PromptSectionProps) {
       <Textarea
         value={fullPrompt}
         onChange={onPromptChange}
-        className="min-h-[100px] w-full rounded-md border border-gray-600 bg-gray-700 p-3 text-purple-300 placeholder:text-gray-400 focus-visible:ring-0"
+        className="min-h-[150px] w-full rounded-md border border-gray-700 bg-gray-800 p-3 text-gray-100 placeholder:text-gray-400 focus:border-gray-600 focus:ring-1 focus:ring-gray-600 focus-visible:ring-0"
         placeholder="Select a base prompt or write your own..."
       />
       {fullPrompt && (
-        <div className="group relative mt-4 cursor-pointer rounded-md bg-gray-700 p-4 transition-colors hover:bg-gray-700/50">
+        <div className="group relative mt-4 cursor-pointer overflow-hidden rounded-md bg-gray-800 p-4 transition-all duration-300 ease-in-out hover:bg-gray-700">
           <div className="flex items-center space-x-2">
-            <p className="flex-1 text-sm text-purple-200">{previewText}</p>
+            <p className="flex-1 text-sm text-gray-300">{previewText}</p>
             {hasMissingVars && (
-              <AlertTriangle className="text-yellow-400" size={20} />
+              <AlertTriangle className="text-yellow-500" size={20} />
             )}
           </div>
           <div
-            className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100"
+            className="absolute right-2 top-2 transform opacity-0 transition-all duration-300 ease-in-out group-hover:translate-y-0 group-hover:opacity-100"
             onClick={onCopyToClipboard}
           >
             <ClipboardCopy
-              className="text-purple-300 hover:text-purple-400"
+              className="text-gray-400 transition-colors duration-200 ease-in-out hover:text-gray-200"
               size={20}
             />
           </div>

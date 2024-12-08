@@ -1,11 +1,11 @@
-import React, { type Dispatch, type SetStateAction } from "react";
+import { AlertCircle, Plus } from "lucide-react";
+import React, { useState, type Dispatch, type SetStateAction } from "react";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { type VarData } from "~/server/types";
 
 interface VariablesSectionProps {
   customVars: VarData[];
-  promptVars: VarData[];
-  updatePromptVar: (id: string, field: "key" | "value", value: string) => void;
   updateCustomVar: (id: string, field: "key" | "value", value: string) => void;
   newCustomKey: string;
   newCustomValue: string;
@@ -17,8 +17,6 @@ interface VariablesSectionProps {
 export default function VariablesSection(props: VariablesSectionProps) {
   const {
     customVars,
-    promptVars,
-    updatePromptVar,
     updateCustomVar,
     newCustomKey,
     newCustomValue,
@@ -27,75 +25,75 @@ export default function VariablesSection(props: VariablesSectionProps) {
     handleAddCustomVar,
   } = props;
 
+  const [duplicateKeys, setDuplicateKeys] = useState<Set<string>>(new Set());
+
+  const checkDuplicateKeys = (vars: VarData[]) => {
+    const keys = vars.map((v) => v.key);
+    const duplicates = new Set(
+      keys.filter((key, index) => keys.indexOf(key) !== index),
+    );
+    setDuplicateKeys(duplicates);
+  };
+
+  React.useEffect(() => {
+    checkDuplicateKeys(customVars);
+  }, [customVars]);
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl text-purple-300">Variables</h2>
-      <p className="text-sm text-gray-400">
-        Inject variables into your prompts.
-      </p>
-
-      {promptVars.length > 0 && (
-        <div>
-          <h3 className="mb-2 text-purple-300">Prompt-Specific Vars</h3>
-          {promptVars.map((pv) => (
-            <div key={pv.id} className="mb-2 flex items-center space-x-2">
-              <Input
-                className="w-2/5 bg-gray-700 text-purple-300"
-                value={pv.key}
-                placeholder="Prompt Var Name"
-                onChange={(e) => updatePromptVar(pv.id, "key", e.target.value)}
-              />
-              <Input
-                className="w-3/5 bg-gray-700 text-purple-300"
-                value={pv.value}
-                placeholder="Prompt Var Value"
-                onChange={(e) =>
-                  updatePromptVar(pv.id, "value", e.target.value)
-                }
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
+    <div className="space-y-6">
       <div>
-        <h3 className="mb-2 text-purple-300">Custom Vars</h3>
+        <h2 className="text-2xl font-semibold text-gray-100">Variables</h2>
+        <p className="text-sm text-gray-400">
+          Inject variables into your prompts. Variables with the same key are
+          not allowed.
+        </p>
+      </div>
+
+      <div className="space-y-4">
         {customVars.map((cv) => (
-          <div key={cv.id} className="mb-2 flex items-center space-x-2">
+          <div key={cv.id} className="flex items-center space-x-2">
             <Input
-              className="w-2/5 bg-gray-700 text-purple-300"
+              className={`w-2/5 bg-gray-800 text-gray-100 ${
+                duplicateKeys.has(cv.key) ? "border-red-500" : "border-gray-700"
+              }`}
               value={cv.key}
-              placeholder="Custom Var Name"
+              placeholder="Variable Name"
               onChange={(e) => updateCustomVar(cv.id, "key", e.target.value)}
             />
             <Input
-              className="w-3/5 bg-gray-700 text-purple-300"
+              className="w-3/5 border-gray-700 bg-gray-800 text-gray-100"
               value={cv.value}
-              placeholder="Custom Var Value"
+              placeholder="Variable Value"
               onChange={(e) => updateCustomVar(cv.id, "value", e.target.value)}
             />
+            {duplicateKeys.has(cv.key) && (
+              <AlertCircle className="text-red-500" size={20} />
+            )}
           </div>
         ))}
-        <div className="mt-2 flex flex-col items-end sm:flex-row sm:space-x-2">
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center space-x-2">
           <Input
-            placeholder="Custom Key"
+            placeholder="New Variable Name"
             value={newCustomKey}
             onChange={(e) => setNewCustomKey(e.target.value)}
-            className="w-full bg-gray-700 text-purple-300 sm:w-1/3"
+            className="w-2/5 border-gray-700 bg-gray-800 text-gray-100"
           />
           <Input
-            placeholder="Custom Value"
+            placeholder="New Variable Value"
             value={newCustomValue}
             onChange={(e) => setNewCustomValue(e.target.value)}
-            className="w-full bg-gray-700 text-purple-300 sm:w-1/3"
+            className="w-3/5 border-gray-700 bg-gray-800 text-gray-100"
           />
-          <button
-            onClick={handleAddCustomVar}
-            className="mt-2 rounded bg-purple-600 px-3 py-1 text-white hover:bg-purple-500 sm:mt-0"
-          >
-            Add New Variable
-          </button>
         </div>
+        <Button
+          onClick={handleAddCustomVar}
+          className="w-full bg-gray-700 text-gray-100 hover:bg-gray-600"
+        >
+          <Plus className="mr-2 h-4 w-4" /> Add New Variable
+        </Button>
       </div>
     </div>
   );

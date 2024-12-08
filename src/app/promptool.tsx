@@ -7,7 +7,6 @@ import PromptCategories from "./components/PromptCategories";
 import { type PromptData, type VarData } from "~/server/types";
 import { prompts } from "~/server/prompts";
 import PromptTabs from "./components/PromptTabs";
-import Header from "./components/Header";
 
 export default function PromptTool() {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
@@ -39,7 +38,7 @@ export default function PromptTool() {
       setCustomVars(arr);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once
+  }, []);
 
   useEffect(() => {
     setCustomVarsRaw(customVars);
@@ -133,27 +132,6 @@ export default function PromptTool() {
     }
   };
 
-  const isKeyUnique = (key: string, excludeId?: string): boolean => {
-    const allVars = [...promptVars, ...customVars];
-    return !allVars.some((v) => v.key === key && v.id !== excludeId);
-  };
-
-  const updatePromptVar = (
-    id: string,
-    field: "key" | "value",
-    value: string,
-  ) => {
-    setPromptVars((prev) =>
-      prev.map((pv) => {
-        if (pv.id === id) {
-          if (field === "key" && !isKeyUnique(value, id)) return pv;
-          return { ...pv, [field]: value };
-        }
-        return pv;
-      }),
-    );
-  };
-
   const updateCustomVar = (
     id: string,
     field: "key" | "value",
@@ -162,7 +140,6 @@ export default function PromptTool() {
     setCustomVars((prev) =>
       prev.map((cv) => {
         if (cv.id === id) {
-          if (field === "key" && !isKeyUnique(value, id)) return cv;
           return { ...cv, [field]: value };
         }
         return cv;
@@ -172,7 +149,8 @@ export default function PromptTool() {
 
   const handleAddCustomVar = () => {
     const key = newCustomKey.trim();
-    if (!key || !isKeyUnique(key)) return;
+    if (!key) return;
+
     setCustomVars((prev) => [
       ...prev,
       { id: crypto.randomUUID(), key, value: newCustomValue },
@@ -190,43 +168,38 @@ export default function PromptTool() {
   const { text: previewText, hasMissingVars } = getPreviewText();
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
-      <Header />
-      <main className="p-6">
-        <PromptTabs
-          fullPrompt={fullPrompt}
-          onPromptChange={handlePromptChange}
-          previewText={previewText}
-          hasMissingVars={hasMissingVars}
-          onCopyToClipboard={copyToClipboard}
-          selectedPrompt={selectedPrompt}
-          customVars={customVars}
-          promptVars={promptVars}
-          updatePromptVar={updatePromptVar}
-          updateCustomVar={updateCustomVar}
-          newCustomKey={newCustomKey}
-          newCustomValue={newCustomValue}
-          setNewCustomKey={setNewCustomKey}
-          setNewCustomValue={setNewCustomValue}
-          handleAddCustomVar={handleAddCustomVar}
-        />
+    <div className="space-y-8">
+      <PromptTabs
+        fullPrompt={fullPrompt}
+        onPromptChange={handlePromptChange}
+        previewText={previewText}
+        hasMissingVars={hasMissingVars}
+        onCopyToClipboard={copyToClipboard}
+        selectedPrompt={selectedPrompt}
+        customVars={customVars}
+        updateCustomVar={updateCustomVar}
+        newCustomKey={newCustomKey}
+        newCustomValue={newCustomValue}
+        setNewCustomKey={setNewCustomKey}
+        setNewCustomValue={setNewCustomValue}
+        handleAddCustomVar={handleAddCustomVar}
+      />
 
-        <div className="mx-auto mb-8 max-w-3xl space-y-4">
-          <PromptFilter
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            categories={categories}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </div>
-
-        <PromptCategories
+      <div className="mx-auto max-w-3xl space-y-4">
+        <PromptFilter
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
           categories={categories}
-          filteredPrompts={filteredPrompts}
-          handleSelectPrompt={handleSelectPrompt}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
         />
-      </main>
+      </div>
+
+      <PromptCategories
+        categories={categories}
+        filteredPrompts={filteredPrompts}
+        handleSelectPrompt={handleSelectPrompt}
+      />
     </div>
   );
 }
