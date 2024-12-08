@@ -1,3 +1,4 @@
+"use client";
 import { AlertCircle, Plus } from "lucide-react";
 import React, { useState, type Dispatch, type SetStateAction } from "react";
 import { Button } from "~/components/ui/button";

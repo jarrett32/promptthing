@@ -1,3 +1,4 @@
+"use client";
 import React, { type Dispatch, type SetStateAction } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { type PromptData, type VarData } from "~/server/types";
