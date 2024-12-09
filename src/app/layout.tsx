@@ -16,6 +16,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="54Q20Yx7Uw2d1J4hVbaAU5IUs2GPhUZXy0OqMeF3DeE"
+        />
+      </head>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
