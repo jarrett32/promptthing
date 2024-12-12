@@ -40,17 +40,17 @@ export default function PromptSection(props: PromptSectionProps) {
         placeholder="Select a base prompt or write your own..."
       />
       {fullPrompt && (
-        <div className="group relative mt-4 cursor-pointer overflow-hidden rounded-md bg-gray-800 p-4 transition-all duration-300 ease-in-out hover:bg-gray-700">
+        <div
+          className="group relative mt-4 cursor-pointer overflow-hidden rounded-md bg-gray-800 p-4 transition-all duration-300 ease-in-out hover:bg-gray-700"
+          onClick={onCopyToClipboard}
+        >
           <div className="flex items-center space-x-2">
             <p className="flex-1 text-sm text-gray-300">{previewText}</p>
             {hasMissingVars && (
               <AlertTriangle className="text-yellow-500" size={20} />
             )}
           </div>
-          <div
-            className="absolute right-2 top-2 transform opacity-0 transition-all duration-300 ease-in-out group-hover:translate-y-0 group-hover:opacity-100"
-            onClick={onCopyToClipboard}
-          >
+          <div className="absolute right-2 top-2 transform opacity-0 transition-all duration-300 ease-in-out group-hover:translate-y-0 group-hover:opacity-100">
             <ClipboardCopy
               className="text-gray-400 transition-colors duration-200 ease-in-out hover:text-gray-200"
               size={20}

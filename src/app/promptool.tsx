@@ -6,10 +6,12 @@ import PromptCategories from "./components/PromptCategories";
 import { type PromptData, type VarData } from "~/server/types";
 import { prompts } from "~/server/prompts";
 import PromptTabs from "./components/PromptTabs";
+import { useToast } from "~/hooks/use-toast";
 
 export default function PromptTool() {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   const categories = Array.from(new Set(prompts.map((p) => p.category)));
+  const { toast } = useToast();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -85,8 +87,13 @@ export default function PromptTool() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(getPreviewText().text);
+      toast({
+        variant: "default",
+        title: "Copied to clipboard!",
+        className: "dark",
+      });
     } catch (error) {
-      console.error("Failed to copy text to clipboard:", error);
+      console.log(error);
     }
   };
 
