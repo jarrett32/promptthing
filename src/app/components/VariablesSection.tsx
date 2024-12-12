@@ -59,7 +59,13 @@ export default function VariablesSection(props: VariablesSectionProps) {
               }`}
               value={cv.key}
               placeholder="Variable Name"
-              onChange={(e) => updateCustomVar(cv.id, "key", e.target.value)}
+              onChange={(e) =>
+                updateCustomVar(
+                  cv.id,
+                  "key",
+                  e.target.value.toLocaleLowerCase(),
+                )
+              }
             />
             <Input
               className="w-3/5 border-gray-700 bg-gray-800 text-gray-100"
@@ -79,7 +85,9 @@ export default function VariablesSection(props: VariablesSectionProps) {
           <Input
             placeholder="New Variable Name"
             value={newCustomKey}
-            onChange={(e) => setNewCustomKey(e.target.value)}
+            onChange={(e) =>
+              setNewCustomKey(e.target.value.toLocaleLowerCase())
+            }
             className="w-2/5 border-gray-700 bg-gray-800 text-gray-100"
           />
           <Input

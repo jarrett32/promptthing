@@ -18,7 +18,6 @@ export default function PromptTool() {
     VarData[] | Record<string, string>
   >([]);
   const [customVars, setCustomVars] = useState<VarData[]>([]);
-  const [promptVars, setPromptVars] = useState<VarData[]>([]);
   const [selectedPrompt, setSelectedPrompt] = useState<PromptData | null>(null);
   const [fullPrompt, setFullPrompt] = useState<string>("");
 
@@ -53,67 +52,27 @@ export default function PromptTool() {
     setSelectedPrompt(prompt);
     setFullPrompt(prompt.prompt);
 
-    const promptKey = `promptVars_${prompt.prompt}`;
-    const saved = localStorage.getItem(promptKey);
-    let loadedVars: VarData[] = [];
-    if (saved) {
-      try {
-        loadedVars = JSON.parse(saved) as VarData[];
-      } catch {
-        loadedVars = [];
-      }
-    }
-
-    const promptVarsMap = new Map(loadedVars.map((pv) => [pv.key, pv]));
-    prompt.variables.forEach((v) => {
-      if (!promptVarsMap.has(v)) {
-        promptVarsMap.set(v, {
+    setCustomVars((prev) => [
+      ...prev,
+      ...prompt.variables
+        .map((v) => ({
           id: crypto.randomUUID(),
           key: v,
           value: "",
-        });
-      }
-    });
-
-    const filteredVars = Array.from(promptVarsMap.values()).filter((pv) =>
-      prompt.variables.includes(pv.key),
-    );
-
-    setPromptVars(filteredVars);
-  };
-
-  useEffect(() => {
-    if (selectedPrompt) {
-      const promptKey = `promptVars_${selectedPrompt.prompt}`;
-      localStorage.setItem(promptKey, JSON.stringify(promptVars));
-    }
-  }, [promptVars, selectedPrompt]);
-
-  const getCombinedVars = (): Record<string, string> => {
-    const combined: Record<string, string> = {};
-    for (const pv of promptVars) {
-      if (pv.key.trim() !== "") {
-        combined[pv.key] = pv.value;
-      }
-    }
-    for (const cv of customVars) {
-      if (cv.key.trim() !== "") {
-        combined[cv.key] = cv.value;
-      }
-    }
-    return combined;
+        }))
+        .filter((cv) => !prev.some((p) => p.key === cv.key)),
+    ]);
   };
 
   const getPreviewText = (): { text: string; hasMissingVars: boolean } => {
-    const combinedVars = getCombinedVars();
     let text = fullPrompt;
-
     const varRegex = /\$\{\{([^}]+)\}\}/g;
     let hasMissingVars = false;
 
     text = text.replace(varRegex, (match: string, p1: string) => {
-      if (combinedVars[p1] !== undefined) {
-        return combinedVars[p1];
+      const foundVar = customVars.find((cv) => cv.key === p1.trim());
+      if (foundVar) {
+        return foundVar.value;
       } else {
         hasMissingVars = true;
         return match;
@@ -139,7 +98,7 @@ export default function PromptTool() {
     setCustomVars((prev) =>
       prev.map((cv) => {
         if (cv.id === id) {
-          return { ...cv, [field]: value };
+          return { ...cv, [field.toLocaleLowerCase()]: value };
         }
         return cv;
       }),
