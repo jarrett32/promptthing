@@ -55,12 +55,12 @@ export default function PromptTool() {
     setFullPrompt(prompt.prompt);
 
     setCustomVars((prev) => [
-      ...prev,
+      ...prev.filter((cv) => prompt.variables.includes(cv.key)),
       ...prompt.variables
         .map((v) => ({
           id: crypto.randomUUID(),
           key: v,
-          value: "",
+          value: localStorage.getItem(v) ?? "",
         }))
         .filter((cv) => !prev.some((p) => p.key === cv.key)),
     ]);
@@ -110,6 +110,18 @@ export default function PromptTool() {
         return cv;
       }),
     );
+
+    if (field === "key") {
+      localStorage.setItem(
+        value,
+        customVars.find((cv) => cv.id === id)?.value ?? "",
+      );
+    } else {
+      localStorage.setItem(
+        customVars.find((cv) => cv.id === id)?.key ?? "",
+        value,
+      );
+    }
   };
 
   const handleAddCustomVar = () => {
@@ -122,6 +134,7 @@ export default function PromptTool() {
     ]);
     setNewCustomKey("");
     setNewCustomValue("");
+    localStorage.setItem(key, newCustomValue);
   };
 
   const handlePromptChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
