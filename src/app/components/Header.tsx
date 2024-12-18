@@ -7,7 +7,9 @@ export default function Header() {
         <Zap className="h-8 w-8" />
         <div>
           <h1 className="text-2xl font-bold text-gray-100">Prompt Thing</h1>
-          <p className="text-sm text-gray-400">Craft Better Prompts</p>
+          <p className="text-sm text-gray-400">
+            Prewritten prompts. Better results.
+          </p>
         </div>
       </div>
       <div className="flex items-center space-x-2 text-gray-400">
