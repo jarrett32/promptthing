@@ -95,7 +95,14 @@ export default function PromptCategories(props: PromptCategoriesProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="border-gray-700 bg-gray-800 shadow-lg">
+            <Card
+              className="border-gray-700 bg-gray-800 shadow-lg hover:cursor-pointer hover:bg-gray-700/80"
+              onClick={() => {
+                if (categoryPrompts.length > 0 && categoryPrompts[0]) {
+                  handleSelectPrompt(categoryPrompts[0]);
+                }
+              }}
+            >
               <CardHeader>
                 <CardTitle className="text-xl text-gray-100">
                   {category}
@@ -110,12 +117,12 @@ export default function PromptCategories(props: PromptCategoriesProps) {
                       ] as React.ComponentType<LucideIcons.LucideProps>) ||
                       TextIcon;
                     return (
-                      <TooltipProvider key={index} delayDuration={300}>
+                      <TooltipProvider key={index} delayDuration={0}>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <motion.button
                               onClick={() => handleSelectPrompt(prompt)}
-                              className="flex h-10 w-10 items-center justify-center rounded-md bg-gray-700 transition-colors duration-200 hover:bg-gray-600"
+                              className={`flex h-10 w-10 items-center justify-center rounded-md bg-gray-700 transition-colors duration-200 hover:bg-gray-600 ${index === 0 ? "border-2 border-gray-400" : ""}`}
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                             >
