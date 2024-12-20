@@ -42,14 +42,9 @@ Contributions are welcome! If you have ideas for new features, improvements, or 
 
 ---
 
-## 📄 License
-
-PromptThing is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute this project as per the terms of the license.
-
----
-
 ### 🌟 Thank You for Using PromptThing!  
 We’re excited to make your workflow easier and more efficient. Stay tuned for more updates!
 
 ### TODO:
 - [ ] disguise mode for ip
+- [ ] save history

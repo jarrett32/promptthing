@@ -35,6 +35,7 @@ export default function PromptTabs(props: PromptTabsProps) {
     setNewCustomKey,
     setNewCustomValue,
     handleAddCustomVar,
+    //search
   } = props;
 
   return (

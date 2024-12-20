@@ -37,7 +37,7 @@ export default function PromptSection(props: PromptSectionProps) {
         value={fullPrompt}
         onChange={onPromptChange}
         className="min-h-[150px] w-full rounded-md border border-gray-700 bg-gray-800 p-3 text-gray-100 placeholder:text-gray-400 focus:border-gray-600 focus:ring-1 focus:ring-gray-600 focus-visible:ring-0"
-        placeholder="Select a base prompt or write your own..."
+        placeholder="Type to start prompting..."
       />
       {fullPrompt && (
         <div

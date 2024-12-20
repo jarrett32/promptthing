@@ -9,12 +9,12 @@ import PromptTabs from "./components/PromptTabs";
 import { useToast } from "~/hooks/use-toast";
 
 export default function PromptTool() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   const categories = Array.from(new Set(prompts.map((p) => p.category)));
   const { toast } = useToast();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [noFilter, setNoFilter] = useState<boolean>(true);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const [customVarsRaw, setCustomVarsRaw] = useState<
     VarData[] | Record<string, string>
@@ -44,11 +44,25 @@ export default function PromptTool() {
     setCustomVarsRaw(customVars);
   }, [customVars, setCustomVarsRaw]);
 
-  const filteredPrompts = prompts.filter(
-    (prompt: PromptData) =>
-      prompt?.prompt?.toLowerCase()?.includes(searchTerm.toLowerCase()) &&
-      (!selectedCategory || prompt.category === selectedCategory),
-  );
+  const filteredPrompts = prompts.filter((prompt: PromptData) => {
+    if (noFilter) return true;
+
+    if (!prompt.prompt || prompt.prompt.length === 0) return false;
+
+    const matchesSearch = prompt.prompt
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    if (!matchesSearch) return false;
+
+    if (
+      selectedCategories.length > 0 &&
+      !selectedCategories.includes(prompt.category)
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
   const handleSelectPrompt = (prompt: PromptData) => {
     setSelectedPrompt(prompt);
@@ -141,6 +155,18 @@ export default function PromptTool() {
     const allowedPattern = /[^a-zA-Z0-9\s\{\}\$]/g;
     const cleanedValue = e.target.value.replace(allowedPattern, "");
     setFullPrompt(cleanedValue);
+
+    if (cleanedValue.length > 0) {
+      const searchPattern = cleanedValue
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((term) => term.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"))
+        .join(".*");
+
+      setSearchTerm(new RegExp(searchPattern, "i").source);
+    } else {
+      setSearchTerm("");
+    }
   };
 
   const { text: previewText, hasMissingVars } = getPreviewText();
@@ -163,13 +189,13 @@ export default function PromptTool() {
         handleAddCustomVar={handleAddCustomVar}
       />
 
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="space-y-4">
         <PromptFilter
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
           categories={categories}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+          noFilter={noFilter}
+          setNoFilter={setNoFilter}
         />
       </div>
 
