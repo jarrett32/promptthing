@@ -7,6 +7,7 @@ import { type PromptData, type VarData } from "~/server/types";
 import { prompts } from "~/server/prompts";
 import PromptTabs from "./components/PromptTabs";
 import { useToast } from "~/hooks/use-toast";
+import Fuse from "fuse.js";
 
 export default function PromptTool() {
   const categories = Array.from(new Set(prompts.map((p) => p.category)));
@@ -26,6 +27,13 @@ export default function PromptTool() {
   const [newCustomKey, setNewCustomKey] = useState<string>("");
   const [newCustomValue, setNewCustomValue] = useState<string>("");
 
+  const fuseOptions = {
+    keys: ["prompt"],
+    threshold: 0.6,
+    includeScore: true,
+  };
+  const fuse = new Fuse(prompts, fuseOptions);
+
   useEffect(() => {
     if (Array.isArray(customVarsRaw)) {
       setCustomVars(customVarsRaw);
@@ -44,25 +52,55 @@ export default function PromptTool() {
     setCustomVarsRaw(customVars);
   }, [customVars, setCustomVarsRaw]);
 
-  const filteredPrompts = prompts.filter((prompt: PromptData) => {
-    if (noFilter) return true;
+  const filteredPrompts = React.useMemo(() => {
+    if (noFilter) return prompts;
 
-    if (!prompt.prompt || prompt.prompt.length === 0) return false;
+    // First apply Fuse search if there's a search term
+    let results = searchTerm
+      ? fuse.search(searchTerm).map((result) => result.item)
+      : prompts;
 
-    const matchesSearch = prompt.prompt
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    if (!matchesSearch) return false;
-
-    if (
-      selectedCategories.length > 0 &&
-      !selectedCategories.includes(prompt.category)
-    ) {
-      return false;
+    // Then filter by categories if any are selected
+    if (selectedCategories.length > 0) {
+      results = results.filter((prompt) =>
+        selectedCategories.includes(prompt.category),
+      );
     }
 
-    return true;
-  });
+    return results;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, selectedCategories, noFilter]);
+
+  // const filteredPrompts = prompts.filter((prompt: PromptData) => {
+  //   if (noFilter) return true;
+
+  //   const promptText = prompt.prompt?.toLowerCase() || "";
+  //   if (!promptText) return false;
+
+  //   // Build a regex pattern that allows for any number of
+  //   // characters (including spaces) between each character of searchTerm
+  //   const regexPattern =
+  //     searchTerm
+  //       .toLowerCase()
+  //       .split("")
+  //       .map((char) => `.*${char}`)
+  //       .join("") + ".*";
+
+  //   const subsequenceRegex = new RegExp(regexPattern, "i");
+
+  //   const matchesSearch = subsequenceRegex.test(promptText);
+
+  //   if (!matchesSearch) return false;
+
+  //   if (
+  //     selectedCategories.length > 0 &&
+  //     !selectedCategories.includes(prompt.category)
+  //   ) {
+  //     return false;
+  //   }
+
+  //   return true;
+  // });
 
   const handleSelectPrompt = (prompt: PromptData) => {
     setSelectedPrompt(prompt);
@@ -201,6 +239,7 @@ export default function PromptTool() {
 
       <PromptCategories
         categories={categories}
+        searchTerm={searchTerm}
         filteredPrompts={filteredPrompts}
         handleSelectPrompt={handleSelectPrompt}
       />

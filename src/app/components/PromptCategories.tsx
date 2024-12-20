@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import {
@@ -10,15 +13,73 @@ import * as LucideIcons from "lucide-react";
 import { TextIcon } from "lucide-react";
 import { type PromptData } from "~/server/types";
 import { motion } from "framer-motion";
+import Fuse from "fuse.js";
 
 interface PromptCategoriesProps {
   categories: string[];
+  searchTerm: string;
   filteredPrompts: PromptData[];
   handleSelectPrompt: (prompt: PromptData) => void;
 }
 
+const highlightText = (text: string, searchTerm: string) => {
+  if (!searchTerm) return text;
+
+  // Create a single-item Fuse instance just for highlighting
+  const fuse = new Fuse([text], {
+    includeMatches: true,
+    threshold: 0.4,
+  });
+
+  const result = fuse.search(searchTerm)[0];
+
+  if (!result?.matches?.length) return text;
+
+  // Sort matches by indices to handle overlapping matches
+  const matches = Array.from(result.matches?.[0]?.indices ?? []).sort(
+    (a: number[], b: number[]) => (a?.[0] ?? 0) - (b?.[0] ?? 0),
+  );
+
+  const chunks: { text: string; highlight: boolean }[] = [];
+  let lastIndex = 0;
+
+  matches.forEach(([start, end]: [number, number]) => {
+    // Add non-matching text before this match
+    if (start > lastIndex) {
+      chunks.push({
+        text: text.substring(lastIndex, start),
+        highlight: false,
+      });
+    }
+    // Add matching text
+    chunks.push({
+      text: text.substring(start, end + 1),
+      highlight: true,
+    });
+    lastIndex = end + 1;
+  });
+
+  // Add any remaining text after the last match
+  if (lastIndex < text.length) {
+    chunks.push({
+      text: text.substring(lastIndex),
+      highlight: false,
+    });
+  }
+
+  return chunks.map((chunk, i) =>
+    chunk.highlight ? (
+      <strong key={i} className="text-gray-300/80">
+        {chunk.text}
+      </strong>
+    ) : (
+      chunk.text
+    ),
+  );
+};
+
 export default function PromptCategories(props: PromptCategoriesProps) {
-  const { categories, filteredPrompts, handleSelectPrompt } = props;
+  const { categories, searchTerm, filteredPrompts, handleSelectPrompt } = props;
 
   return (
     <div className="space-y-6">
@@ -40,7 +101,7 @@ export default function PromptCategories(props: PromptCategoriesProps) {
                   {category}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-4">
                 <div className="flex flex-wrap gap-4">
                   {categoryPrompts.map((prompt, index) => {
                     const Icon =
@@ -69,6 +130,11 @@ export default function PromptCategories(props: PromptCategoriesProps) {
                     );
                   })}
                 </div>
+                {categoryPrompts.length > 0 && categoryPrompts[0] ? (
+                  <p className="text-sm text-gray-300/50">
+                    {highlightText(categoryPrompts[0].prompt, searchTerm)}
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
           </motion.div>
